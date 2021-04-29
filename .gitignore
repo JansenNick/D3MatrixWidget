@@ -1,0 +1,7 @@
+dist/
+node_modules/
+tests/testProject/*
+!tests/testProject/app.mpr
+!tests/testProject/widgets
+*.log
+.env
