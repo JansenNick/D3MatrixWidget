@@ -37,6 +37,13 @@
                     <attributeType name="String"/>
                 </attributeTypes>
             </property>
+            <property key="sortAlgorithm" type="attribute" >
+                <caption>Sort algorithm</caption>
+                <description></description>
+                <attributeTypes>
+                    <attributeType name="Enum"/>
+                </attributeTypes>
+            </property>
         </propertyGroup>
     </properties>
 </widget>

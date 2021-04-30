@@ -4,7 +4,7 @@
  * @author Mendix UI Content Team
  */
 import { CSSProperties } from "react";
-import { ListValue, ListAttributeValue } from "mendix";
+import { EditableValue, ListValue, ListAttributeValue } from "mendix";
 
 export interface MatrixContainerProps {
     name: string;
@@ -16,6 +16,7 @@ export interface MatrixContainerProps {
     links?: ListValue;
     linkSourceID?: ListAttributeValue<string>;
     linkTargetID?: ListAttributeValue<string>;
+    sortAlgorithm: EditableValue<string>;
 }
 
 export interface MatrixPreviewProps {
@@ -26,4 +27,5 @@ export interface MatrixPreviewProps {
     links: {} | null;
     linkSourceID: string;
     linkTargetID: string;
+    sortAlgorithm: string;
 }
