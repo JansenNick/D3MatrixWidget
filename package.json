@@ -31,6 +31,7 @@
     "@types/react-dom": "~17.0.1"
   },
   "dependencies": {
-    "classnames": "^2.2.6"
+    "d3": "^6.2.0",
+    "reorder.js": "^2.0.3"
   }
 }
