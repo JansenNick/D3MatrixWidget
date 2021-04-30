@@ -17,7 +17,11 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
     useEffect(() => {
         if (props.nodes.status === 'available' && props.links.status === 'available') {
             const nodes = props.nodes.items.map(obj => {
-                return { "name": props.nodeID.get(obj).value }
+                return {
+                    "name": props.nodeID.get(obj).value,
+                    "index": 0,
+                    "count": 0
+                }
             })
             const links = props.links.items.map(obj => {
                 return {
@@ -30,6 +34,18 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 "nodes": nodes,
                 "links": links,
             }
+
+            var matrixReorder = [];
+            var nodesReorder = graph.nodes;
+            var nReorder = nodesReorder.length;
+
+            nodesReorder.forEach((node, i) => {
+                node.index = i;
+                node.count = 0;
+                matrixReorder[i] = d3.range(nReorder).map(function(j) { return {x: j, y: i, z: 0}; });
+            })
+
+
 
             const margin = { top: 80, right: 0, bottom: 10, left: 80 },
                 width = 720,
