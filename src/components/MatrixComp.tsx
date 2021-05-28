@@ -9,30 +9,45 @@ import { Order } from "reorder.js";
 export interface MatrixContainerProps {
     nodes?: ListValue;
     nodeID?: ListAttributeValue<string>;
+    nodeLabel?: ListAttributeValue<string>;
     links?: ListValue;
     linkSourceID?: ListAttributeValue<string>;
     linkTargetID?: ListAttributeValue<string>;
     sortAlgorithm: EditableValue<string>;
 }
 
+interface groupArr{
+    groupName : string
+}
+
 export default function MatrixComp(props: MatrixContainerProps): ReactElement {
     // const order: Order = reorder;
     const svgRef = useRef();
     const svgElement = document.getElementById("testID");
+    let groupArr: groupArr[] = [];
+
     useEffect(() => {
         if (props.nodes.status === "available" && props.links.status === "available") {
             const nodes = props.nodes.items.map(obj => {
+                let moduleName = props.nodeLabel.get(obj).value.substr(0, props.nodeLabel.get(obj).value.indexOf('.'));
+                if (groupArr.find(el => el.groupName == moduleName) == undefined){
+                    groupArr.push({
+                        "groupName": moduleName
+                    })
+                }
+                console.log("nodeLabel",props.nodeLabel.get(obj).value)
                 return {
-                    name: props.nodeID.get(obj).value,
+                    name: props.nodeLabel.get(obj).value,
+                    id: props.nodeID.get(obj).value,
                     index: 0,
                     count: 0,
-                    group: Math.floor(Math.random() * 10)
+                    group: groupArr.indexOf(groupArr.find(el => el.groupName == moduleName))
                 };
             });
             const links = props.links.items.map(obj => {
                 return {
-                    source: parseInt(props.linkSourceID.get(obj).value, 10),
-                    target: parseInt(props.linkTargetID.get(obj).value, 10),
+                    source: parseInt(props.linkSourceID.get(obj).value,10),
+                    target: parseInt(props.linkTargetID.get(obj).value,10),
                     value: 5
                 };
             });
@@ -41,7 +56,6 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 links
             };
             const permutations = orders(graph);
-
             const matrixReorder = [];
             const nodesReorder = graph.nodes;
             const nReorder = nodesReorder.length;
@@ -54,9 +68,9 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 });
             });
 
-            const margin = { top: 80, right: 0, bottom: 10, left: 80 };
-            const width = 720;
-            const height = 720;
+            const margin = { top: 220, right: 0, bottom: 10, left: 250 };
+            const width = 1000;
+            const height = 1000;
             const svg = d3.select(svgRef.current);
 
             svg.selectAll("*").remove();
@@ -74,13 +88,15 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
             const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             g.append("rect").style("fill", "#eee").attr("width", width).attr("height", height);
-
+            const index = nodes.map((d, i) => ("id" in d ? d.id : i));
+            
             const matrix = graph.links
                 .flatMap(({ source, target, value }) => [
-                    [source, target, value],
-                    [target, source, value]
+                    [index.indexOf(source.toString()), index.indexOf(target.toString()), value],
+                    [index.indexOf(target.toString()), index.indexOf(source.toString()), value]
                 ])
-                .concat(nodeIds.map(i => [i, i]));
+                .concat(nodeIds.map(i => [i, i]))
+                ;
 
             const labels = g.append("g").style("font-size", "8px").style("font-family", "sans-serif");
 
@@ -114,8 +130,9 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 .join("rect")
                 .attr("width", x.bandwidth() - 2)
                 .attr("height", x.bandwidth() - 2)
-                .attr("fill", ([s, t]) =>
-                    graph.nodes[s].group === graph.nodes[t].group ? c(graph.nodes[t].group) : "black"
+                .attr("fill", ([s, t]) =>{
+                    return graph.nodes.find( el => el.index == s).group === graph.nodes.find( el => el.index == t).group ? c(graph.nodes.find( el => el.index == t).group) : "black"
+                }
                 )
                 .attr("fill-opacity", ([, , v]) => z(v));
             let prev;
@@ -206,8 +223,8 @@ function orders({ nodes, links }) {
         nodes.count = 0;
     }
     links.forEach(link => {
-        const i = index.indexOf(link.source);
-        const j = index.indexOf(link.target);
+        const i = index.indexOf(link.source.toString());
+        const j = index.indexOf(link.target.toString());
         if (!("value" in link)) {
             link.value = 1;
         }

@@ -1,0 +1,9 @@
+Buildfile: \\Mac\Home\Git\D3MatrixWidget\tests\testProject copy\deployment\build_core.xml
+
+deploy:
+     [copy] Copying 34 files to \\Mac\Home\Git\D3MatrixWidget\tests\testProject copy\deployment
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+
+

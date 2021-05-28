@@ -1,0 +1,9 @@
+Buildfile: \\Mac\Home\Git\D3MatrixWidget\tests\testProject\deployment\build_core.xml
+
+clean:
+   [delete] Deleting directory \\Mac\Home\Git\D3MatrixWidget\tests\testProject\deployment\model
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+
+

@@ -19,6 +19,13 @@
                     <attributeType name="String"/>
                 </attributeTypes>
             </property>
+            <property key="nodeLabel" type="attribute" required="false" dataSource="nodes">
+                <caption>Node Label</caption>
+                <description></description>
+                <attributeTypes>
+                    <attributeType name="String"/>
+                </attributeTypes>
+            </property>
             <property key="links" type="datasource" isList="true" required="false">
 	            <caption>Link</caption>
 	            <description />

@@ -13,6 +13,7 @@ export default class Matrix extends Component<MatrixContainerProps> {
             <MatrixComp
                 nodes={this.props.nodes}
                 nodeID={this.props.nodeID}
+                nodeLabel={this.props.nodeLabel}
                 links={this.props.links}
                 linkSourceID={this.props.linkSourceID}
                 linkTargetID={this.props.linkTargetID}
