@@ -14,6 +14,7 @@ export interface MatrixContainerProps {
     nodes?: ListValue;
     nodeID?: ListAttributeValue<string>;
     nodeLabel?: ListAttributeValue<string>;
+    nodeGroup?: ListAttributeValue<string>;
     links?: ListValue;
     linkSourceID?: ListAttributeValue<string>;
     linkTargetID?: ListAttributeValue<string>;
@@ -26,6 +27,7 @@ export interface MatrixPreviewProps {
     nodes: {} | null;
     nodeID: string;
     nodeLabel: string;
+    nodeGroup: string;
     links: {} | null;
     linkSourceID: string;
     linkTargetID: string;

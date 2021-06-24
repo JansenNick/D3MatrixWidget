@@ -1,53 +1,48 @@
-import React, { useRef, useEffect, useState, createElement, ReactElement } from "react";
+import React, { CSSProperties, useRef, useEffect, createElement, ReactElement } from "react";
 import * as d3 from "d3";
-import data from "./dataOriginal";
-import { ListValue, EditableValue, ActionValue, ListAttributeValue } from "mendix";
+// import data from "./dataOriginal";
+import { ListValue, EditableValue, ListAttributeValue } from "mendix";
 import reorder from "reorder.js/dist/reorder";
-import { Order } from "reorder.js";
+// import { Order } from "reorder.js";
 // import orders from "./orders";
 
 export interface MatrixContainerProps {
     nodes?: ListValue;
     nodeID?: ListAttributeValue<string>;
     nodeLabel?: ListAttributeValue<string>;
+    nodeGroup?: ListAttributeValue<string>;
     links?: ListValue;
     linkSourceID?: ListAttributeValue<string>;
     linkTargetID?: ListAttributeValue<string>;
     sortAlgorithm: EditableValue<string>;
-}
-
-interface groupArr{
-    groupName : string
+    className?: string;
+    style?: CSSProperties;
 }
 
 export default function MatrixComp(props: MatrixContainerProps): ReactElement {
     // const order: Order = reorder;
     const svgRef = useRef();
     const svgElement = document.getElementById("testID");
-    let groupArr: groupArr[] = [];
 
     useEffect(() => {
         if (props.nodes.status === "available" && props.links.status === "available") {
             const nodes = props.nodes.items.map(obj => {
-                let moduleName = props.nodeLabel.get(obj).value.substr(0, props.nodeLabel.get(obj).value.indexOf('.'));
-                if (groupArr.find(el => el.groupName == moduleName) == undefined){
-                    groupArr.push({
-                        "groupName": moduleName
-                    })
-                }
-                console.log("nodeLabel",props.nodeLabel.get(obj).value)
+                const moduleName = props.nodeLabel
+                    .get(obj)
+                    .value.substr(0, props.nodeLabel.get(obj).value.indexOf("."));
+
                 return {
                     name: props.nodeLabel.get(obj).value,
                     id: props.nodeID.get(obj).value,
                     index: 0,
                     count: 0,
-                    group: groupArr.indexOf(groupArr.find(el => el.groupName == moduleName))
+                    group: props.nodeGroup.get(obj).value
                 };
             });
             const links = props.links.items.map(obj => {
                 return {
-                    source: parseInt(props.linkSourceID.get(obj).value,10),
-                    target: parseInt(props.linkTargetID.get(obj).value,10),
+                    source: parseInt(props.linkSourceID.get(obj).value, 10),
+                    target: parseInt(props.linkTargetID.get(obj).value, 10),
                     value: 5
                 };
             });
@@ -68,16 +63,14 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 });
             });
 
-            const margin = { top: 220, right: 0, bottom: 10, left: 250 };
-            const width = 1000;
-            const height = 1000;
+            const margin = { top: 50, right: 0, bottom: 10, left: 50 };
+            const width = 600;
+            const height = 600;
             const svg = d3.select(svgRef.current);
 
             svg.selectAll("*").remove();
 
-            svg.attr("class", "test")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom);
+            svg.attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
 
             const nodeIds = d3.range(graph.nodes.length);
 
@@ -89,15 +82,13 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
 
             g.append("rect").style("fill", "#eee").attr("width", width).attr("height", height);
             const index = nodes.map((d, i) => ("id" in d ? d.id : i));
-            
+
             const matrix = graph.links
                 .flatMap(({ source, target, value }) => [
                     [index.indexOf(source.toString()), index.indexOf(target.toString()), value],
                     [index.indexOf(target.toString()), index.indexOf(source.toString()), value]
                 ])
-                .concat(nodeIds.map(i => [i, i]))
-                ;
-
+                .concat(nodeIds.map(i => [i, i]));
             const labels = g.append("g").style("font-size", "8px").style("font-family", "sans-serif");
 
             const columns = labels
@@ -130,10 +121,11 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 .join("rect")
                 .attr("width", x.bandwidth() - 2)
                 .attr("height", x.bandwidth() - 2)
-                .attr("fill", ([s, t]) =>{
-                    return graph.nodes.find( el => el.index == s).group === graph.nodes.find( el => el.index == t).group ? c(graph.nodes.find( el => el.index == t).group) : "black"
-                }
-                )
+                .attr("fill", ([s, t]) => {
+                    return graph.nodes.find(el => el.index === s).group === graph.nodes.find(el => el.index === t).group
+                        ? c(graph.nodes.find(el => el.index === t).group)
+                        : "black";
+                })
                 .attr("fill-opacity", ([, , v]) => z(v));
             let prev;
 
@@ -208,7 +200,7 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
     });
     return (
         <React.Fragment>
-            <svg id="testID" ref={svgRef}></svg>
+            <svg id="testID" className={props.className} style={props.style} ref={svgRef}></svg>
         </React.Fragment>
     );
 }

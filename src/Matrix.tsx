@@ -14,10 +14,13 @@ export default class Matrix extends Component<MatrixContainerProps> {
                 nodes={this.props.nodes}
                 nodeID={this.props.nodeID}
                 nodeLabel={this.props.nodeLabel}
+                nodeGroup={this.props.nodeGroup}
                 links={this.props.links}
                 linkSourceID={this.props.linkSourceID}
                 linkTargetID={this.props.linkTargetID}
                 sortAlgorithm={this.props.sortAlgorithm}
+                className={this.props.class}
+                style={this.props.style}
             />
         );
         // }

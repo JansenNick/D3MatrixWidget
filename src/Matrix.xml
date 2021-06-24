@@ -26,6 +26,13 @@
                     <attributeType name="String"/>
                 </attributeTypes>
             </property>
+            <property key="nodeGroup" type="attribute" required="false" dataSource="nodes">
+                <caption>Node Group</caption>
+                <description></description>
+                <attributeTypes>
+                    <attributeType name="String"/>
+                </attributeTypes>
+            </property>
             <property key="links" type="datasource" isList="true" required="false">
 	            <caption>Link</caption>
 	            <description />
