@@ -9,9 +9,6 @@ Widget to visualize data in an adjacency matrix
 
 ## Usage
 - See test project in `tests/testProject9` for example setup
-
-## Demo project
-- See test project in `tests/testProject9`
 - Create a Node entity and give it an ID, NodeLabel and Group attribute (all strings).
 - Create a Link entity and give it a SourceID and TargetID attribute.
 - These entities will represent your network, make sure the Node IDs are unique, and the SourceID and TargetID in the Link entity reference these Node IDs.
@@ -19,6 +16,9 @@ Widget to visualize data in an adjacency matrix
 - Where you want to put the widget on a page, first create an dataview that has this MatrixWrapper object as a datasource.
 - Put the widget in this dataview and set all the values in the Data tab.
 - In the Styling tab you can toggle the animation of the sort algorithm and configure the size of the matrix.
+
+## Demo project
+- See test project in `tests/testProject9`
 
 ## Issues, suggestions and feature requests
 [link to GitHub issues](https://github.com/JansenNick/D3MatrixWidget/issues)
