@@ -19,6 +19,7 @@ Widget to visualize data in an adjacency matrix
 
 ## Demo project
 - See test project in `tests/testProject9`
+- [Demo video](https://youtu.be/DQqODJDxZQk)
 
 ## Issues, suggestions and feature requests
 [link to GitHub issues](https://github.com/JansenNick/D3MatrixWidget/issues)
