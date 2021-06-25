@@ -1,5 +1,6 @@
 ## Matrix
-Widget to visualize data in an adjacency matrix
+Mendix pluggable widget to visualize data in an adjacency matrix.
+![MatrixWidget](screenshot.png)
 
 ## Features
 - Matrix visualization of network data
