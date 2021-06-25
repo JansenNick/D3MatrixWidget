@@ -7,8 +7,6 @@ import "./ui/Matrix.css";
 
 export default class Matrix extends Component<MatrixContainerProps> {
     render(): ReactNode {
-        // if (this.props.nodes.status === 'available' &&
-        //     this.props.links.status === 'available') {
         return (
             <MatrixComp
                 nodes={this.props.nodes}
@@ -21,8 +19,14 @@ export default class Matrix extends Component<MatrixContainerProps> {
                 sortAlgorithm={this.props.sortAlgorithm}
                 className={this.props.class}
                 style={this.props.style}
+                width={this.props.width}
+                height={this.props.height}
+                marginLeft={this.props.marginLeft}
+                marginRight={this.props.marginRight}
+                marginTop={this.props.marginTop}
+                marginBottom={this.props.marginBottom}
+                animation={this.props.animation}
             />
         );
-        // }
     }
 }

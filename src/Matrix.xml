@@ -51,12 +51,42 @@
                     <attributeType name="String"/>
                 </attributeTypes>
             </property>
-            <property key="sortAlgorithm" type="attribute" >
+            <property key="sortAlgorithm" type="attribute" required="false">
                 <caption>Sort algorithm</caption>
                 <description></description>
                 <attributeTypes>
                     <attributeType name="Enum"/>
                 </attributeTypes>
+            </property>
+        </propertyGroup>
+        <propertyGroup caption="Style">
+            <property key="animation" type="boolean" defaultValue="true">
+                <caption>animation</caption>
+                <description></description>
+            </property>
+            <property key="width" type="integer" defaultValue="600">
+                <caption>width</caption>
+                <description></description>
+            </property>
+            <property key="height" type="integer" defaultValue="600">
+                <caption>height</caption>
+                <description></description>
+            </property>
+            <property key="marginLeft" type="integer" defaultValue="80">
+                <caption>marginLeft</caption>
+                <description></description>
+            </property>
+            <property key="marginRight" type="integer" defaultValue="0">
+                <caption>marginRight</caption>
+                <description></description>
+            </property>
+            <property key="marginTop" type="integer" defaultValue="80">
+                <caption>marginTop</caption>
+                <description></description>
+            </property>
+            <property key="marginBottom" type="integer" defaultValue="0">
+                <caption>marginBottom</caption>
+                <description></description>
             </property>
         </propertyGroup>
     </properties>

@@ -1,8 +1,6 @@
 dist/
 node_modules/
-tests/testProject/*
-!tests/testProject/app.mpr
-!tests/testProject/widgets
+tests/testProject
 tests/testProjectcopy
 tests/testProject9/deployment
 *.log

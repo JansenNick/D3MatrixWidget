@@ -1,10 +1,8 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { CSSProperties, useRef, useEffect, createElement, ReactElement } from "react";
 import * as d3 from "d3";
-// import data from "./dataOriginal";
 import { ListValue, EditableValue, ListAttributeValue } from "mendix";
 import reorder from "reorder.js/dist/reorder";
-// import { Order } from "reorder.js";
-// import orders from "./orders";
 
 export interface MatrixContainerProps {
     nodes?: ListValue;
@@ -17,20 +15,21 @@ export interface MatrixContainerProps {
     sortAlgorithm: EditableValue<string>;
     className?: string;
     style?: CSSProperties;
+    width?: number;
+    height?: number;
+    marginLeft?: number;
+    marginRight?: number;
+    marginTop?: number;
+    marginBottom?: number;
+    animation: boolean;
 }
 
 export default function MatrixComp(props: MatrixContainerProps): ReactElement {
-    // const order: Order = reorder;
     const svgRef = useRef();
-    const svgElement = document.getElementById("testID");
 
     useEffect(() => {
         if (props.nodes.status === "available" && props.links.status === "available") {
             const nodes = props.nodes.items.map(obj => {
-                const moduleName = props.nodeLabel
-                    .get(obj)
-                    .value.substr(0, props.nodeLabel.get(obj).value.indexOf("."));
-
                 return {
                     name: props.nodeLabel.get(obj).value,
                     id: props.nodeID.get(obj).value,
@@ -39,10 +38,22 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                     group: props.nodeGroup.get(obj).value
                 };
             });
-            const links = props.links.items.map(obj => {
+            const idNodes = nodes.flatMap(x => x.id);
+            const filteredLinks = props.links.items.filter(obj => {
+                if (
+                    idNodes.includes(props.linkSourceID.get(obj).value) &&
+                    idNodes.includes(props.linkTargetID.get(obj).value)
+                ) {
+                    return true;
+                } else {
+                    console.warn("Source or target id of link not found for object " + JSON.stringify(obj));
+                }
+                return false;
+            });
+            const links = filteredLinks.map(obj => {
                 return {
-                    source: parseInt(props.linkSourceID.get(obj).value, 10),
-                    target: parseInt(props.linkTargetID.get(obj).value, 10),
+                    source: props.linkSourceID.get(obj).value,
+                    target: props.linkTargetID.get(obj).value,
                     value: 5
                 };
             });
@@ -63,14 +74,21 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 });
             });
 
-            const margin = { top: 50, right: 0, bottom: 10, left: 50 };
-            const width = 600;
-            const height = 600;
+            const margin = {
+                top: props.marginTop,
+                right: props.marginRight,
+                bottom: props.marginBottom,
+                left: props.marginLeft
+            };
+            const width = props.width;
+            const height = props.height;
             const svg = d3.select(svgRef.current);
 
             svg.selectAll("*").remove();
 
-            svg.attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+            svg.attr("class", props.className)
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom);
 
             const nodeIds = d3.range(graph.nodes.length);
 
@@ -103,6 +121,7 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 .append("text")
                 .attr("dx", 2)
                 .attr("dy", x.bandwidth() / 2 + 2)
+                .attr("id", i => "v_id_" + graph.nodes[i].name)
                 .text(i => graph.nodes[i].name);
 
             const rows = labels.append("g").selectAll().data(nodeIds).join("g");
@@ -111,6 +130,7 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 .attr("text-anchor", "end")
                 .attr("dx", -2)
                 .attr("dy", x.bandwidth() / 2 + 2)
+                .attr("id", i => "h_id_" + graph.nodes[i].name)
                 .text(i => graph.nodes[i].name);
 
             const rects = g
@@ -119,6 +139,20 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 .selectAll()
                 .data(matrix)
                 .join("rect")
+                .on("click", function (MouseEvent, d) {
+                    d3.selectAll("text").style("fill", "black").attr("class", "");
+                    d3.selectAll("rect").style("stroke", "").style("stroke-width", "").attr("class", "");
+                    d3.select("#h_id_node" + d[1].toString())
+                        .style("fill", "orange")
+                        .attr("class", props.className + "-selected");
+                    d3.select("#v_id_node" + d[0].toString())
+                        .style("fill", "orange")
+                        .attr("class", props.className + "-selected");
+                    d3.select(this)
+                        .style("stroke", "orange")
+                        .style("stroke-width", 2)
+                        .attr("class", props.className + "-selected");
+                })
                 .attr("width", x.bandwidth() - 2)
                 .attr("height", x.bandwidth() - 2)
                 .attr("fill", ([s, t]) => {
@@ -134,10 +168,9 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
             // eslint-disable-next-line no-inner-declarations
             function update(permutation) {
                 x.domain(permutation);
-
-                const delay = prev ? i => x(i) * 4 : 0;
-                const delay2 = prev ? ([i]) => x(i) * 4 : 0;
-                const duration = prev ? 1500 : 0;
+                const delay = prev && props.animation ? i => x(i) * 4 : 0;
+                const delay2 = prev && props.animation ? ([i]) => x(i) * 4 : 0;
+                const duration = prev && props.animation ? 1500 : 0;
 
                 columns
                     .transition()
@@ -159,24 +192,12 @@ export default function MatrixComp(props: MatrixContainerProps): ReactElement {
                 return permutation;
             }
             switch (props.sortAlgorithm.value) {
-                case "barycenter": {
-                    update(permutations.barycenter());
-                    break;
-                }
-                case "count": {
-                    update(permutations.count());
-                    break;
-                }
                 case "group": {
                     update(permutations.group());
                     break;
                 }
                 case "leafOrder": {
                     update(permutations.leafOrder());
-                    break;
-                }
-                case "leafOrderDist": {
-                    update(permutations.leafOrderDist());
                     break;
                 }
                 case "name": {
@@ -210,10 +231,6 @@ function orders({ nodes, links }) {
     const matrix = Array.from(nodes, (_, i) => d3.range(n).map(j => ({ x: j, y: i, z: 0 })));
     const index = nodes.map((d, i) => ("id" in d ? d.id : i));
     const l = [];
-    // eslint-disable-next-line guard-for-in
-    for (const node in nodes) {
-        nodes.count = 0;
-    }
     links.forEach(link => {
         const i = index.indexOf(link.source.toString());
         const j = index.indexOf(link.target.toString());
@@ -233,31 +250,12 @@ function orders({ nodes, links }) {
 
     const graph = reorder.graph().nodes(nodes).links(l).init();
 
-    let dist_adjacency;
-
     const leafOrder = reorder.optimal_leaf_order();
-    // .distance(science.stats.distance.manhattan);
 
     function computeLeaforder() {
         const order = leafOrder(adjacency);
         order.forEach((lo, i) => (nodes[i].leafOrder = lo));
         return nodes.map(n => n.leafOrder);
-    }
-
-    function computeLeaforderDist() {
-        if (!dist_adjacency) {
-            dist_adjacency = reorder.graph2valuemats(graph);
-        }
-        const order = reorder.valuemats_reorder(dist_adjacency, leafOrder);
-        order.forEach((lo, i) => (nodes[i].leafOrderDist = lo));
-        return nodes.map(n => n.leafOrderDist);
-    }
-
-    function computeBarycenter() {
-        const barycenter = reorder.barycenter_order(graph);
-        const improved = reorder.adjacent_exchange(graph, ...barycenter);
-        improved[0].forEach((lo, i) => (nodes[i].barycenter = lo));
-        return nodes.map(n => n.barycenter);
     }
 
     function computeRCM() {
@@ -275,7 +273,6 @@ function orders({ nodes, links }) {
     const orders = {
         none: () => d3.range(n),
         name: () => d3.range(n).sort((a, b) => d3.ascending(nodes[a].name, nodes[b].name)),
-        count: () => d3.range(n).sort((a, b) => nodes[b].count - nodes[a].count),
         group: () =>
             d3
                 .range(n)
@@ -283,8 +280,6 @@ function orders({ nodes, links }) {
                     (a, b) => d3.ascending(nodes[a].group, nodes[b].group) || d3.ascending(nodes[a].name, nodes[b].name)
                 ),
         leafOrder: computeLeaforder,
-        leafOrderDist: computeLeaforderDist,
-        barycenter: computeBarycenter,
         rcm: computeRCM,
         spectral: computeSpectral
     };

@@ -14,6 +14,11 @@ import com.mendix.systemwideinterfaces.core.IContext;
 public class Microflows
 {
 	// These are the microflows for the Data module
+	public static boolean aSU_SetupData(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		return (java.lang.Boolean) Core.microflowCall("Data.ASU_SetupData").withParams(params).execute(context);
+	}
 	public static void deleteAllNodesAndLinks(IContext context)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();

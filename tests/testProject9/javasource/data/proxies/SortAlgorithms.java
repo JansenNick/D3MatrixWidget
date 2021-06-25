@@ -6,7 +6,6 @@ package data.proxies;
 
 public enum SortAlgorithms
 {
-	count(new java.lang.String[][] { new java.lang.String[] { "en_US", "count" } }),
 	group(new java.lang.String[][] { new java.lang.String[] { "en_US", "group" } }),
 	leafOrder(new java.lang.String[][] { new java.lang.String[] { "en_US", "leafOrder" } }),
 	name(new java.lang.String[][] { new java.lang.String[] { "en_US", "name" } }),

@@ -18,7 +18,14 @@ export interface MatrixContainerProps {
     links?: ListValue;
     linkSourceID?: ListAttributeValue<string>;
     linkTargetID?: ListAttributeValue<string>;
-    sortAlgorithm: EditableValue<string>;
+    sortAlgorithm?: EditableValue<string>;
+    animation: boolean;
+    width: number;
+    height: number;
+    marginLeft: number;
+    marginRight: number;
+    marginTop: number;
+    marginBottom: number;
 }
 
 export interface MatrixPreviewProps {
@@ -32,4 +39,11 @@ export interface MatrixPreviewProps {
     linkSourceID: string;
     linkTargetID: string;
     sortAlgorithm: string;
+    animation: boolean;
+    width: number | null;
+    height: number | null;
+    marginLeft: number | null;
+    marginRight: number | null;
+    marginTop: number | null;
+    marginBottom: number | null;
 }
